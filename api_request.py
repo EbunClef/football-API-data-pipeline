@@ -1,6 +1,6 @@
 import auth
 import requests
-import json
+import pandas as pd
 
 
 def main_request(page):
@@ -37,6 +37,8 @@ for page in range(1, 21):  # Pages from 1 to 20
     if data is not None:
         movies_on_page = parse_json(data)
         all_movies.extend(movies_on_page)
-
+print(page)
 print("Total movies retrieved:", len(all_movies)) 
 
+dataframe = pd.DataFrame(all_movies)
+print(dataframe.head(),dataframe.tail())
