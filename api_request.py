@@ -3,9 +3,10 @@ import requests
 import json
 
 
-def main_request():
+def main_request(page):
     try:
-        response = requests.get(auth.url, headers=auth.headers)
+        url = f"https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&sort_by=popularity.desc&year=2023&page={page}"
+        response = requests.get(url, headers=auth.headers)
         response.raise_for_status()  # Raise an exception for HTTP errors (status codes >= 400)
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -29,15 +30,13 @@ def parse_json(response):
     return charlist
 
 # Fetch data from the API
-data = main_request()
-if data is not None:
-    # Parse the JSON response
-    characters = parse_json(data)
-    if characters is not None:
-        # Print parsed data
-        for char in characters:
-            print(char)
-    else:
-        print("No data to parse.")
-else:
-    print("No data fetched from the API.")
+all_movies = []
+
+for page in range(1, 21):  # Pages from 1 to 20
+    data = main_request(page)
+    if data is not None:
+        movies_on_page = parse_json(data)
+        all_movies.extend(movies_on_page)
+
+print("Total movies retrieved:", len(all_movies)) 
+
